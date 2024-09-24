@@ -1,4 +1,3 @@
-// components/MapComponent.tsx
 "use client";
 
 import React, { useState } from 'react';
@@ -20,10 +19,6 @@ const mapContainerStyle = {
     width: "100%"
 };
 
-const center = {
-    lat: 23.8859, // Approx. center of Saudi Arabia
-    lng: 45.0792
-};
 
 const markers: MarkerType[] = [
     { id: 1, position: { lat: 24.7136, lng: 46.6753 }, price: 100, name: "House A", image: "https://ychef.files.bbci.co.uk/624x351/p0h9k5dl.jpg" },
@@ -37,6 +32,11 @@ const markers: MarkerType[] = [
     { id: 9, position: { lat: 25.6666, lng: 43.9999 }, price: 900, name: "House I", image: "https://www.shutterstock.com/image-photo/interior-living-room-television-couch-260nw-2341123617.jpg" },
     { id: 10, position: { lat: 26.7777, lng: 45.1111 }, price: 1000, name: "House J", image: "https://i.pinimg.com/736x/71/e4/fa/71e4fa929a0a9a0c1635e244b3a8a6ae.jpg" }
 ];
+
+const center = {
+    lat: 23.8859, // Approx. center of Saudi Arabia
+    lng: 45.0792
+};
 
 const MapComponent: React.FC = () => {
     const [selectedMarker, setSelectedMarker] = useState<MarkerType | null>(null);
@@ -52,61 +52,84 @@ const MapComponent: React.FC = () => {
     };
 
     return (
-<div className="flex flex-col h-screen md:flex-row">
-    <div className="h-1/2 md:h-full md:w-1/2">
-        <LoadScript googleMapsApiKey="AIzaSyBmU9-1tZ8rgYd8u48ga9Z25fiLXW3ZCOY">
-            <GoogleMap
-                mapContainerStyle={mapContainerStyle}
-                center={center}
-                zoom={6}
-            >
-                {markers.map(marker => (
-                    <Marker
-                        key={marker.id}
-                        position={marker.position}
-                        onClick={() => onMarkerClick(marker)}
-                        icon={{
-                            url: "data:image/svg+xml;base64," + btoa(`
+        <div className="flex flex-col h-screen sm:flex-row">
+            <div className="h-1/2 sm:h-full sm:w-1/2">
+                <LoadScript googleMapsApiKey="AIzaSyBmU9-1tZ8rgYd8u48ga9Z25fiLXW3ZCOY">
+                    <GoogleMap
+                        mapContainerStyle={mapContainerStyle}
+                        center={center}
+                        zoom={6}
+                    >
+                        {markers.map(marker => (
+                            <Marker
+                                key={marker.id}
+                                position={marker.position}
+                                onClick={() => onMarkerClick(marker)}
+                                icon={{
+                                    url: "data:image/svg+xml;base64," + btoa(`
                 <svg xmlns="http://www.w3.org/2000/svg" width="60" height="30">
                     <rect width="60" height="30" fill="white" rx="5" />
                     <text x="30" y="20" font-size="14" text-anchor="middle" fill="black">${marker.price} $ </text>
                 </svg>
               `)
-                        }}
-                    />
-                ))}
-            </GoogleMap>
-        </LoadScript>
-    </div>
-    <div className="flex-1 py-5 px-24  md:p-5 overflow-y-auto  md:w-1/2">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            {markers
-                .filter(marker =>
-                    selectedMarker === null ||
-                    selectedMarker.id === marker.id ||
-                    (showMore && selectedMarker.id !== marker.id)
-                )
-                .map(marker => (
-                    <div key={marker.id} className="flex flex-col border border-gray-300 rounded-lg p-2">
-                        <img src={marker.image} alt={marker.name} className="w-full h-3/4 rounded-lg" />
-                        <h2 className="font-bold my-2">{marker.name}</h2>
-                        <h3 className="font-large">Price: {marker.price} $</h3>
-                    </div>
-                ))}
+                                }}
+                            />
+                        ))}
+                    </GoogleMap>
+                </LoadScript>
+            </div>
+            <div className="flex-1 py-5 px-24  sm:p-5 overflow-y-auto  sm:w-1/2">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                    {markers
+                        .filter(marker =>
+                            selectedMarker === null ||
+                            selectedMarker.id === marker.id ||
+                            (showMore && selectedMarker.id !== marker.id)
+                        )
+                        .map(marker => (
+                            <div key={marker.id} className="flex flex-col border border-gray-300 rounded-lg p-2">
+                                <img src={marker.image} alt={marker.name} className="w-full h-3/4 rounded-lg" />
+                                <h2 className="font-bold my-2">{marker.name}</h2>
+                                <h3 className="font-large">
+                                    Price: <span className="animated-price">{marker.price} $</span>
+                                </h3>
+                            </div>
+                        ))}
+                </div>
+                <div className="flex justify-center mt-8">
+                    {selectedMarker && !showMore && (
+                        <button
+                            onClick={handleSeeMore}
+                            className="bg-black text-white border-none rounded-md py-2 px-5 cursor-pointer text-lg"
+                        >
+                            See More
+                        </button>
+                    )}
+                </div>
+            </div>
+            <style jsx>{`
+                @keyframes colorChange {
+                    0% {
+                        color: #0c51d9;
+                    }
+                    50% {
+                        color: #618feb;
+                    }
+                    100% {
+                        color: #0c51d9;
+                    }
+                }
+
+                .animated-price {
+                    animation: colorChange 2s linear infinite;
+                }
+            `}</style>
         </div>
-        <div className="flex justify-center mt-8">
-            {selectedMarker && !showMore && (
-                <button
-                    onClick={handleSeeMore}
-                    className="bg-black text-white border-none rounded-md py-2 px-5 cursor-pointer text-lg"
-                >
-                    See More
-                </button>
-            )}
-        </div>
-    </div>
-</div>
+
+
     );
 };
+
+
 
 export default MapComponent;
