@@ -78,7 +78,7 @@ const MapComponent: React.FC = () => {
                     </GoogleMap>
                 </LoadScript>
             </div>
-            <div className="flex-1 py-5 px-16  sm:p-5 overflow-y-auto  sm:w-1/2">
+            <div className="flex-1 py-5 px-12  sm:p-5 overflow-y-auto  sm:w-1/2">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                     {markers
                         .filter(marker =>
